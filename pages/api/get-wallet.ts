@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import crypto from 'node:crypto';
+import { createHmac } from 'node:crypto';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).json({ message: 'Method Not Allowed' });
@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const sortedData = Object.fromEntries(Object.entries(data).sort());
   const signatureString = new URLSearchParams(sortedData).toString();
-  const signature = crypto.createHmac('sha256', secret_key).update(signatureString).digest('hex');
+  const signature = createHmac('sha256', secret_key).update(signatureString).digest('hex');
   data['sign'] = signature;
 
   const formData = new URLSearchParams(data);
